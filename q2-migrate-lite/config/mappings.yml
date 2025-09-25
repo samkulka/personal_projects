@@ -1,0 +1,40 @@
+tables:
+  customers:
+    source: customers.csv
+    target: dim_customer
+    key: customer_id
+    columns:
+      id: customer_id
+      name: full_name
+      dob: birth_date
+      address: address
+    casts:
+      birth_date: date
+  accounts:
+    source: accounts.csv
+    target: dim_account
+    key: account_id
+    columns:
+      id: account_id
+      customer_id: customer_id
+      balance: balance_cents
+      open_date: open_date
+    transforms:
+      balance_cents: "lambda r: int(round(float(r['balance']) * 100))"
+  transactions:
+    source: transactions.csv
+    target: fct_transaction
+    key: txn_id
+    columns:
+      id: txn_id
+      account_id: account_id
+      type: txn_type
+      amount: amount_cents
+      timestamp: txn_ts
+    enums:
+      txn_type:
+        DEP: DEPOSIT
+        WDR: WITHDRAWAL
+        FEE: FEE
+    casts:
+      txn_ts: timestamptz

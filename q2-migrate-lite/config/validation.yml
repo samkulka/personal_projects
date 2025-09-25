@@ -1,0 +1,18 @@
+rules:
+  - name: customers_count
+    table: dim_customer
+    type: row_count_equals_source
+    source: customers.csv
+
+  - name: accounts_balance_consistency
+    sql_source: "SELECT SUM(CAST(balance*100 AS BIGINT)) FROM accounts"  # if SQLite legacy
+    sql_target: "SELECT SUM(balance_cents) FROM dim_account"
+
+  - name: txn_amount_sum
+    sql_source: "SELECT SUM(CAST(amount*100 AS BIGINT)) FROM transactions"
+    sql_target: "SELECT SUM(amount_cents) FROM fct_transaction"
+
+  - name: unique_customer_id
+    table: dim_customer
+    type: unique
+    column: customer_id
