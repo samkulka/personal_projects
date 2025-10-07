@@ -1,0 +1,5 @@
+opencv-python
+onnxruntime
+numpy
+pillow
+rich
